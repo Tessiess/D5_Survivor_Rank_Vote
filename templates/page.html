@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <title>求生者强度投票箱</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/compare.css') }}" />
+</head>
+
+<body onload="new_compare();">
+    <div class="bg">
+        <div class="com">
+            <table class="compare">
+                <tr>
+                    <!-- 左侧角色图片 在new_compare函数GET成功后更新 -->
+                    <td>
+                        <div class="operator-container" onclick="save_score_left()">
+                            <img id="left_png">
+                            <div class="zh" id="left_png_name"></div>
+                        </div>
+                    </td>
+
+                    <!-- 比较核心区域 -->
+                    <!-- fixme: 用css给这一块设置固定宽度，替代下面的一堆&nbsp; -->
+                    <td>
+                        <!-- 标题 -->
+                        <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第五人格求生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h1>
+                        <h1>强度投票箱</h1>
+                        <br>
+                        <!-- 按钮和反馈 -->
+                        <div class="compare_block">
+                            <h4 id="toupiao_success">&nbsp;</h4>
+                            <div class="function">
+                                <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
+                            </div>
+                            <div class="function">
+                                <input class="result" type="button" value="查看总投票结果" onclick="close_or_view()">
+                                <input class="close" type="button" value="关闭总投票结果" onclick="close_or_view()">
+                            </div>
+                            <div class="function">
+                                <input class="result" id="self_rst_button" type="button" value="查看您的投票结果"
+                                    onclick="view_self()">
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- 右侧角色图片 -->
+                    <td>
+                        <div class="operator-container" onclick="save_score_right()">
+                            <img id="right_png">
+                            <div class="zh" id="right_png_name"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- footer部分 -->
+        <div class="footer">
+            <h4>V1.0.0 第五人格求生强度榜来啦！</h4>
+            <h4>作者：Tessiess</h4>
+            <h4>服务器赞助：无</h4>
+            <br>
+            <h3 class="red_text">服务器带宽小，图片加载有点卡，请稍等一两分钟，谢谢！</h3>
+        </div>
+        <div class="footer">
+            <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有角色的胜率和得分，以胜率排名。</h2>
+            <h2>每个ip只能投30票，自第31票起，每票按0.01票计算权重。</h2>
+            <h2>自己的投票结果，不受30票限制，但网页刷新/关闭时会清零。</h2>
+            <h2 class="red_text">警告：由于角色随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
+            <h2 class="red_text">仅供娱乐，请勿用作选角建议和TTK工具！</h2>
+            <h2>鸣谢：本投票两两比较的灵感来源于隔壁游戏，图片来自于第五人格官网(为啥图片不一样大qwq)，大部分代码来自于引用项目，特别鸣谢他们详细的代码注释！</h2>
+            <h4>“自定义聚类数目”功能：聚类数目越多，区分度越高(图中以颜色区分) 默认区分度为 80%</h3>
+                <h4>若要尝试不同的聚类数目，可以在右下方的“分层数”中调整。</h3>
+                    <br>
+                    <h3>本项目上传到github：</h3>
+                    <a href="https://github.com/Tessiess/D5_Survivor_Rank_Vote">
+                        https://github.com/Tessiess/D5_Survivor_Rank_Vote
+                    </a>
+                    <h3>本网页引用项目：</h3>
+                    <a href="https://github.com/SYadda/Arknights_6Star_Rank_Vote">
+                        https://github.com/SYadda/Arknights_6Star_Rank_Vote
+                    </a>
+        </div>
+        <!-- 不可见数据部分,在获取数据后展示 -->
+        <div class="final">
+            <br>
+            <h1 id="已收集数据量">&nbsp;</h1>
+            <h1 id="您已投票">&nbsp;</h1>
+
+            <br>
+            <div class="final_table_group">
+                <table id="final_order_table" class="final_table">
+                    <caption>总投票结果</caption>
+                    <thead>
+                        <tr>
+                            <th>t级</th>
+                            <th>排名</th>
+                            <th>角色</th>
+                            <th>胜率</th>
+                            <th>得分</th>
+                        </tr>
+                    </thead>
+                    <tbody id="final_order_tbody"></tbody>
+                </table>
+                <table id="self_table" class="final_table">
+                    <caption>您的投票结果</caption>
+                    <thead>
+                        <tr>
+                            <th>t级</th>
+                            <th>排名</th>
+                            <th>角色</th>
+                            <th>胜率<span id="win_rate" class="sort-icon select down" onclick="sort_table(this)"></span>
+                            </th>
+                            <th>得分<span id="scores" class="sort-icon down" onclick="sort_table(this)"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="self_order_tbody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="nclassesInput">
+            <label for="nclassesInput">分层数：</label>
+            <input id="nclassesInput" style="font-size: medium;" type="number" min="1" max="9" value="6">
+            <br>
+            <label for="GVF">区分度:</label>
+            <label id="GVF"></label>
+        </div>
+        <button id="topBtn" onclick="scrollToTop()">回到顶部</button>
+    </div>
+
+    <script type="text/javascript">
+        const DATA_DICT = JSON.parse('{{ data_dict | tojson | safe }}');
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/geostats.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/palette.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/page.js') }}"></script>
+</body>
+
+</html>
