@@ -44,6 +44,7 @@ class Config(object):
         "拉拉队员": 41,
         "木偶师": 42,
         "火灾调查员":43,
+        "法罗女士":44,
     }
     DICT_PIC_URL = {
         "幸运儿": 'https://id5.res.netease.com/pc/gw/20220408094220/data/rolehead/qsz_5.png',
@@ -90,6 +91,7 @@ class Config(object):
         "拉拉队员": 'https://id5.res.netease.com/pc/gw/20220408094220/data/rolehead/qsz_42.png',
         "木偶师":'https://id5.res.netease.com/pc/gw/20220408094220/data/rolehead/qsz_43.png',
         "火灾调查员":"https://id5.res.netease.com/pc/gw/20220408094220/data/rolehead/qsz_44.png",
+        "法罗女士":"https://id5.res.netease.com/pc/gw/20220408094220/data/rolehead/qsz_45.png",
     }
 
 
